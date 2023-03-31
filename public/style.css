@@ -118,7 +118,7 @@ main {
     outline: none;
 }
 
-@media (max-width: 45em) {
+@media (max-width: 50em) {
     .ip-address-section input {
         grid-column: span 15;
     }
@@ -137,6 +137,7 @@ main {
     border-radius: 1rem;
     gap: 2rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    max-width: 90vw;
 }
 
 .detail-heading {
@@ -160,13 +161,13 @@ main {
     height: 80px;
 }
 
-@media (min-width: 45em) {
+@media (min-width: 50em) {
     .detail {
         width: 225px;
     }
 }
 
-@media (max-width: 45em) {
+@media (max-width: 50em) {
     .details-section {
         flex-direction: column;
         width: 85vw;

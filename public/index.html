@@ -14,54 +14,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div id="root">
-    <main>
-      <section class="ip-address-section">
-        <h1>IP Address Tracker</h1>
-        <form action="/" method="POST">
-          <input placeholder="Search for any IP address or domain" type="text" name="ipAddress" id="">
-          <button type="submit">></button>
-        </form>
-      </section>
-      <section class="details-section">
-        <div class="ip-address detail">
-          <h2 class="detail-heading">IP Address</h2>
-          <p class="detail-info"><%= ipAddress %></p>
-        </div>
-
-        <div class="partition"></div>
-        
-        
-        <div class="location detail">
-          <h2 class="detail-heading">Location</h2>
-          <p class="detail-info"><%= location %></p>
-        </div>
-        
-        <div class="partition"></div>
-
-        <div class="timezone detail">
-          <h2 class="detail-heading">Timezone</h2>
-          <p class="detail-info">UTC <%= timezone %></p>
-        </div>
-
-        <div class="partition"></div>
-
-        <div class="isp detail">
-          <h2 class="detail-heading">ISP</h2>
-          <p class="detail-info"><%= isp %></p>
-        </div>
-      </section>
-      <div class="background">
-        <img src="images/pattern-bg-desktop.png" alt="">
-        <div id="map"></div>
-      </div>
-    </main>
-  </div>
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
-  <script src="https://kit.fontawesome.com/e11de3d7e3.js" crossorigin="anonymous"></script>
+
+  <div id="root"></div>
+  <script src="../src/index.js" type="text/babel"></script>
   <script>
-    var map = L.map('map').setView(["<%= lng %>", "<%= lat %>"], 13);
+    var map = L.map('map').setView([33, 44], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -76,7 +34,8 @@
         popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
-    var marker = L.marker(["<%= lng %>", "<%= lat %>"], {icon: Icon}).addTo(map);
+    var marker = L.marker([33, 44], {icon: Icon}).addTo(map);
   </script>
+
 </body>
 </html>
