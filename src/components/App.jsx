@@ -4,133 +4,136 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 export default function App() {
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
-    const [screenSize, setScreenSize] = useState(window.innerWidth);
-
-    useEffect(() => {
-        window.addEventListener('resize', () => {
-            setScreenSize(window.innerWidth);
-        });
-    }, [])
-
-    const [query, setQuery] = useState({
-        ipAddress: '',
-        location: '',
-        timezone: '',
-        isp: ''
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setScreenSize(window.innerWidth);
     });
+  }, []);
 
+  const [query, setQuery] = useState({
+    ipAddress: "",
+    location: "",
+    timezone: "",
+    isp: "",
+  });
 
+  let url = `https://geo.ipify.org/api/v2/country,city?apiKey=at_vlQXhjyFUhL6NrLUvuSG2OYLFgBuR`;
+  // url = 'https://google.com'
 
-    let url = `https://geo.ipify.org/api/v2/country,city?apiKey=at_vlQXhjyFUhL6NrLUvuSG2OYLFgBuR`;
-    // url = 'https://google.com'
+  useEffect(() => {
+    axios.get(url).then((response) => {
+      const details = response.data;
+      const { ip, location, as } = details;
+      const { country, city, lat, lng, timezone } = location;
+      const locationString = `${city}, ${country}`;
 
-    useEffect(() => {
-        
-        
+      setQuery({
+        ipAddress: ip,
+        location: locationString,
+        timezone: timezone,
+        isp: as.name,
+      });
 
-        axios.get(url)
-        .then(response => {
+      const map = L.map("map").setView([48.773748, 9.182143], 13);
 
-            const details = response.data;
-            const {ip, location, as} = details;
-            const {country, city, lat, lng, timezone} = location;
-            const locationString = `${city}, ${country}`;
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-            setQuery({
-                ipAddress: ip,
-                location: locationString,
-                timezone: timezone,
-                isp: as.name
-            });
+      const Icon = L.icon({
+        iconUrl: "images/icon-location.svg",
 
+        iconSize: [45, 55], // size of the icon
+        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+        popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
+      });
 
+      map.setView([lat, lng], 13);
 
-            const map = L.map('map').setView([48.773748, 9.182143], 13);
+      L.marker([lat, lng], { icon: Icon }).addTo(map);
+    });
+  }, []);
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        
-            const Icon = L.icon({
-                iconUrl: 'images/icon-location.svg',
-        
-                iconSize:     [45, 55], // size of the icon
-                iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-                popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-            });
+  const [inputIp, setInputIp] = useState("");
 
-            map.setView([lat, lng], 13);
-        
-            L.marker([lat, lng], {icon: Icon}).addTo(map);
-                
-            
-        })
-    
-    }, []);
+  return (
+    <main>
+      <div className="main-body">
+        <section className="ip-address-section">
+          <h1>IP Address Tracker</h1>
+          <form>
+            <input
+              placeholder="Search for any IP address or domain"
+              type="text"
+              name="ipAddress"
+              id=""
+              onChange={(e) => setInputIp(e.target.value)}
+              value={inputIp}
+            />
+            <button
+              type="submit"
+              onClick={(e) => {
+                axios.get(url + "&ipAddress=" + inputIp).then((response) => {
+                  const details = response.data;
+                  const { ip, location, as } = details;
+                  const { country, city, lat, lng, timezone } = location;
+                  const locationString = `${city}, ${country}`;
 
-    const [inputIp, setInputIp] = useState('');
+                  setQuery({
+                    ipAddress: ip,
+                    location: locationString,
+                    timezone: timezone,
+                    isp: as.name,
+                  });
+                });
 
-    return (
-        <main>
-            <div className="main-body">
-                <section className="ip-address-section">
-                    <h1>IP Address Tracker</h1>
-                    <form>
-                    <input placeholder="Search for any IP address or domain" type="text" name="ipAddress" id=""
-                    onChange={(e) => setInputIp(e.target.value)} value={inputIp} />
-                    <button type="submit" onClick={(e) => {
-                        
-                        axios.get(url + '&ipAddress=' + inputIp)
-                        .then(response => {
-                            const details = response.data;
-                            const {ip, location, as} = details;
-                            const {country, city, lat, lng, timezone} = location;
-                            const locationString = `${city}, ${country}`;
+                e.preventDefault();
+              }}
+            >
+              {">"}
+            </button>
+          </form>
+        </section>
+        <section className="details-section">
+          <div className="ip-address detail">
+            <h2 className="detail-heading">IP Address</h2>
+            <p className="detail-info">{query.ipAddress}</p>
+          </div>
 
-                            setQuery({
-                                ipAddress: ip,
-                                location: locationString,
-                                timezone: timezone,
-                                isp: as.name
-                            });
-                        })
+          <div className="partition"></div>
 
-                        e.preventDefault();
-                    }}>{'>'}</button>
-                    </form>
-                </section>
-                <section className="details-section">
-                    <div className="ip-address detail">
-                    <h2 className="detail-heading">IP Address</h2>
-                    <p className="detail-info">{query.ipAddress}</p>
-                    </div>
+          <div className="location detail">
+            <h2 className="detail-heading">Location</h2>
+            <p className="detail-info"> {query.location}</p>
+          </div>
 
-                    <div className="partition"></div>
-                    
-                    
-                    <div className="location detail">
-                    <h2 className="detail-heading">Location</h2>
-                    <p className="detail-info"> {query.location}</p>
-                    </div>
-                    
-                    <div className="partition"></div>
+          <div className="partition"></div>
 
-                    <div className="timezone detail">
-                    <h2 className="detail-heading">Timezone</h2>
-                    <p className="detail-info">UTC {query.timezone}</p>
-                    </div>
+          <div className="timezone detail">
+            <h2 className="detail-heading">Timezone</h2>
+            <p className="detail-info">UTC {query.timezone}</p>
+          </div>
 
-                    <div className="partition"></div>
+          <div className="partition"></div>
 
-                    <div className="isp detail">
-                    <h2 className="detail-heading">ISP</h2>
-                    <p className="detail-info"> {query.isp} </p>
-                    </div>
-                </section>
-            </div>
-            <img src={screenSize >= 720 ? "images/pattern-bg-desktop.png" : "images/pattern-bg-mobile.png"} alt="" />
-        </main>
-    );
+          <div className="isp detail">
+            <h2 className="detail-heading">ISP</h2>
+            <p className="detail-info"> {query.isp} </p>
+          </div>
+        </section>
+      </div>
+      <img
+        src={
+          screenSize >= 720
+            ? "images/pattern-bg-desktop.png"
+            : "images/pattern-bg-mobile.png"
+        }
+        alt=""
+      />
+    </main>
+  );
 }
