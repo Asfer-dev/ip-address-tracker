@@ -61,6 +61,8 @@ export default function App() {
     );
   }
 
+  const [message, setMessage] = useState("");
+
   return (
     <main>
       <div className="main-body">
@@ -94,12 +96,15 @@ export default function App() {
                   });
                 });
 
+                setMessage("Click on the map to locate!");
+
                 e.preventDefault();
               }}
             >
               {">"}
             </button>
           </form>
+          {message && <p style={{ color: "#fff" }}>{message}</p>}
         </section>
         <section className="details-section">
           <div className="ip-address detail">
