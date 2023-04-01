@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import Icon from "../icon-location.svg";
 import L from "leaflet";
 
 export default function App() {
+  const MARKER_ICON = L.icon({
+    iconUrl: Icon,
+    iconSize: [34, 40],
+  });
+
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -20,7 +27,7 @@ export default function App() {
   });
 
   let url = `https://geo.ipify.org/api/v2/country,city?apiKey=at_vlQXhjyFUhL6NrLUvuSG2OYLFgBuR`;
-  // url = 'https://google.com'
+  //   url = "https://google.com";
 
   useEffect(() => {
     axios.get(url).then((response) => {
@@ -34,31 +41,25 @@ export default function App() {
         location: locationString,
         timezone: timezone,
         isp: as.name,
+        lat: lat,
+        lng: lng,
       });
-
-      const map = L.map("map").setView([48.773748, 9.182143], 13);
-
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution:
-          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
-
-      const Icon = L.icon({
-        iconUrl: "images/icon-location.svg",
-
-        iconSize: [45, 55], // size of the icon
-        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-        popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
-      });
-
-      map.setView([lat, lng], 13);
-
-      L.marker([lat, lng], { icon: Icon }).addTo(map);
     });
   }, []);
 
   const [inputIp, setInputIp] = useState("");
+
+  function LocationMarker() {
+    const map = useMapEvents({
+      click() {
+        map.flyTo([query.lat, query.lng], map.getZoom());
+      },
+    });
+
+    return (
+      <Marker icon={MARKER_ICON} position={[query.lat, query.lng]}></Marker>
+    );
+  }
 
   return (
     <main>
@@ -88,6 +89,8 @@ export default function App() {
                     location: locationString,
                     timezone: timezone,
                     isp: as.name,
+                    lat: lat,
+                    lng: lng,
                   });
                 });
 
@@ -134,6 +137,22 @@ export default function App() {
         }
         alt=""
       />
+      <div className="map-container">
+        {query.lat && query.lng && (
+          <MapContainer
+            center={[query.lat, query.lng]}
+            zoom={13}
+            scrollWheelZoom={true}
+            style={{ height: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <LocationMarker />
+          </MapContainer>
+        )}
+      </div>
     </main>
   );
 }
