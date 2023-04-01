@@ -68,7 +68,7 @@ main {
 /* IP Address Section */
 
 .ip-address-section {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
