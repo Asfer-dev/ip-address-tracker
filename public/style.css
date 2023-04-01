@@ -43,7 +43,7 @@ body {
     position: relative;
 }
 
-main {
+.main-body {
     position: absolute;
     left: 0;
     top: 0;
