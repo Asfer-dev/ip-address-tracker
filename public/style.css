@@ -44,25 +44,30 @@ body {
 }
 
 main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 3rem;
-    z-index: 1;
+    z-index: 1000;
 }
 
 /* Background */
 
 .background {
-    position: absolute;
+    background-color: rgb(75, 255, 225);
+    position: relative;
     inset: 0;
-    z-index: -1;
+    /* z-index: -1; */
 }
 
 #map {
     /* background-color: red; */
     position: relative;
-    min-height: calc(100vh - 260px);
+    min-height: calc(100vh);
 }
 
 /* IP Address Section */

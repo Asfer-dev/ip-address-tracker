@@ -14,8 +14,8 @@ export default function App() {
 
 
 
-    let url = `https://geo.ipify.org/api/v2/country,city?apiKey=at_vlQXhjyFUhL6NrLUvuSG2OYLFgBuR`;
-    // let url = 'https://google.com'
+    let url = `https://geo.ipify.org/api/v2/country?apiKey=at_vlQXhjyFUhL6NrLUvuSG2OYLFgBuR`;
+    // url = 'https://google.com'
 
     useEffect(() => {
         
